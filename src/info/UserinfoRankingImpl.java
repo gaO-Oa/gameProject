@@ -11,7 +11,7 @@ import exceptions.DataIOException;
 public class UserinfoRankingImpl implements UserinfoRanking {
 
 	@Override
-	public String getBestNic(int grade) {
+	public String getBestNic(int grade) throws DataIOException {
 		
 		String sql = "select project_game.user.no, nickname, score from project_game.user "
 				+ "left outer join project_game.userscore on user.no = userscore.no "
@@ -36,7 +36,7 @@ public class UserinfoRankingImpl implements UserinfoRanking {
 
 
 	@Override
-	public int getBestScore(int grade) {
+	public int getBestScore(int grade) throws DataIOException {
 		
 		String sql = "select project_game.user.no, nickname, score from project_game.user "
 				+ "left outer join project_game.userscore on user.no = userscore.no "
@@ -61,7 +61,7 @@ public class UserinfoRankingImpl implements UserinfoRanking {
 
 
 	@Override
-	public int getBestcharacter(int grade) {
+	public int getBestcharacter(int grade) throws DataIOException {
 		
 		String sql = "SELECT roundCharacter FROM project_game.userscore "
 				+ "order by score desc limit ?, 1;";

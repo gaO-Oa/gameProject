@@ -11,9 +11,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import exceptions.DataIOException;
 import info.UserinfoRepositoryImpl;
 
 public class Menu extends JFrame {
@@ -23,7 +25,7 @@ public class Menu extends JFrame {
 	Toolkit kit = Toolkit.getDefaultToolkit();
 	Image munuImage = kit.getImage(classLoader.getResource("menu.png"));
 	
-	public Menu(LogIn logIn) {
+	public Menu(LogIn logIn) throws DataIOException {
 		
 		setBounds(100, 100, 500, 400);
 		contentPane = new JLabel();
@@ -43,12 +45,9 @@ public class Menu extends JFrame {
 		btn_gameStart.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws DataIOException {
 				setVisible(false);
-				new showGame(logIn).setVisible(true);
-				
-				//dispose();
-				
+				new showGame(logIn).setVisible(true);				
 			}
 		});
 		contentPane.add(btn_gameStart);
@@ -63,7 +62,7 @@ public class Menu extends JFrame {
 		btn_Shop.setBounds(290, 100, 100, 50);
 		btn_Shop.addActionListener(new ActionListener() {	
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws DataIOException {
 				setVisible(false);
 				String inputId = logIn.getMyId();
 				System.out.println(inputId);
@@ -72,7 +71,8 @@ public class Menu extends JFrame {
 				String myMoney = String.valueOf(ur.countMoney(inputId));
 				System.out.println(myMoney);
 				sh.showMoney(myMoney);
-				sh.showGUI();	
+				sh.showGUI();
+				
 			}
 		});
 		contentPane.add(btn_Shop);
@@ -85,9 +85,10 @@ public class Menu extends JFrame {
 		btn_Rank.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws DataIOException {
 				setVisible(false);
 				new Rank(logIn).showGUI();
+				
 			}
 		});
 		contentPane.add(btn_Rank);
@@ -100,17 +101,15 @@ public class Menu extends JFrame {
 		btn_MyRoom.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+			public void actionPerformed(ActionEvent e) throws DataIOException {
+				setVisible(false);			
 				new MyRoom(logIn).showGUI();
-				// dispose();
-
 			}
 		});
 		contentPane.add(btn_MyRoom);
 	}
 	
-	public void showGUI() {
+	public void showGUI() throws DataIOException {
 		setVisible(true);
 	}
 

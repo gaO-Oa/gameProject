@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import exceptions.DataIOException;
 import info.UserinfoRankingImpl;
 
 public class Rank extends JFrame {
@@ -43,7 +44,7 @@ public class Rank extends JFrame {
 	private JLabel lbl_characterA;
 	private int bestCha;
 	
-	public Rank(LogIn login) {
+	public Rank(LogIn login) throws DataIOException {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -140,7 +141,7 @@ public class Rank extends JFrame {
 		}
 				
 	}
-	public void showGUI() {
+	public void showGUI() throws DataIOException {
 		setVisible(true);
 	}
 

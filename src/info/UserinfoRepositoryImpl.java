@@ -32,7 +32,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //닉네임중복체크
 	@Override
-	public int countByNickName(String inputNickname) {
+	public int countByNickName(String inputNickname) throws DataIOException {
 		String sql = "SELECT count(*) FROM project_game.user where nickname = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -52,7 +52,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //회원가입
 	@Override // 회원가입
-	public int insert(String inputId, String inputPassword, String inputNickname) {
+	public int insert(String inputId, String inputPassword, String inputNickname) throws DataIOException  {
 		String sql = "INSERT INTO project_game.user (id, password, nickname) values (?, ?, ?)";
 
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -71,7 +71,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //마지막가입자 pk	
 	@Override
-	public int lastNo() {
+	public int lastNo() throws DataIOException  {
 		String sqlLastNo = "SELECT no FROM project_game.user ORDER BY no desc limit 1;";
 
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -91,7 +91,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //로그인
 	@Override
-	public int login(String inputId, String inputPassword) {
+	public int login(String inputId, String inputPassword) throws DataIOException   {
 		String sql = "SELECT count(*) FROM project_game.user where id = ? and password = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -111,7 +111,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int setMoney(int myNo) {
+	public int setMoney(int myNo) throws DataIOException {
 		String sql1 = "UPDATE project_game.user SET money = (SELECT sum(roundMoney) From project_game.userscore WHERE no = ?) where no = ?";
 		
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -128,7 +128,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 //회원의 보유머니
 	@Override
-	public int countMoney(String inputId) {
+	public int countMoney(String inputId) throws DataIOException  {
 		String sql2 = "SELECT money FROM project_game.user where id = ?";
 		
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -148,7 +148,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //캐릭터 값만큼 돈빼기
 	@Override
-	public int changeMoney(String inputId, int price) {
+	public int changeMoney(String inputId, int price) throws DataIOException {
 		String sql = "UPDATE project_game.user SET money = money - ? WHERE id = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -163,7 +163,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //캐릭터 보유시 1
 	@Override
-	public int buyCharacter(String inputId, int whatCharacter) {
+	public int buyCharacter(String inputId, int whatCharacter) throws DataIOException {
 		String sql = "SELECT no FROM project_game.user WHERE ID = ?";
 		String sql2 = "UPDATE project_game.retainedcharacter SET have = 1 WHERE NO = ? AND WHO = ?";
 		int inputIdNo = 0;
@@ -189,7 +189,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //가입시 기본캐릭터줌
 	@Override
-	public int standardCharacter(int lastNo) {
+	public int standardCharacter(int lastNo) throws DataIOException {
 		String sql = "INSERT INTO project_game.retainedcharacter (no, who, have) values (?, 1, 1);";
 		String sql2 = "INSERT INTO project_game.retainedcharacter (no, who, have) values (?, 2, 0);";
 		String sql3 = "INSERT INTO project_game.retainedcharacter (no, who, have) values (?, 3, 0);";
@@ -222,7 +222,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //가지고있는 캐릭터 확인
 	@Override
-	public int haveCharacter(int lastNo, int whatCharacter) {
+	public int haveCharacter(int lastNo, int whatCharacter) throws DataIOException {
 		String sql = "SELECT have FROM project_game.retainedcharacter where no = ? and who = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -243,7 +243,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 
 //회원의pk확인
 	@Override
-	public int getMyNo(String inputId) {
+	public int getMyNo(String inputId) throws DataIOException {
 		String sql = "SELECT no FROM project_game.user where id = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -262,7 +262,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int choiceCharacte(int myNo, int whatCharacter) {
+	public int choiceCharacte(int myNo, int whatCharacter) throws DataIOException {
 		String sql = "UPDATE project_game.user SET gamecharacter = ? where no = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();	
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -276,7 +276,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int findCharacte(String inputId) {
+	public int findCharacte(String inputId) throws DataIOException {
 		String sql = "SELECT gamecharacter FROM project_game.user WHERE ID = ?;";
 		
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -298,7 +298,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int findLastRound(int myNo) {
+	public int findLastRound(int myNo) throws DataIOException {
 		String sql ="SELECT round FROM project_game.userscore WHERE no = ? order by round desc";
 		
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -322,7 +322,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int stadardRound(int lastNo) {
+	public int stadardRound(int lastNo) throws DataIOException {
 		String sql = "INSERT INTO project_game.userscore (no, round, score, roundMoney, roundCharacter) values (?, 0, 0, 0, 1)";
 
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -338,7 +338,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int saveScore(int myNo, int lastRound, int score, int money, int myCharacter) {
+	public int saveScore(int myNo, int lastRound, int score, int money, int myCharacter) throws DataIOException {
 		String sql = "INSERT INTO project_game.userscore (no, round, score, roundMoney, roundCharacter) values (?, ?, ?, ?, ?)";
 
 		try (Connection conn = ConnectionProvider.makeConnection();
@@ -358,7 +358,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
 	}
 
 	@Override
-	public int getMyCharacter(String inputId) {
+	public int getMyCharacter(String inputId) throws DataIOException {
 		String sql = "SELECT gamecharacter FROM project_game.user WHERE ID = ?";
 		try (Connection conn = ConnectionProvider.makeConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql)) {			

@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import exceptions.DataIOException;
 import info.UserinfoRepositoryImpl;
 
 public class showGame extends JFrame {
@@ -65,8 +66,10 @@ public class showGame extends JFrame {
 	private Timer huddleTimer;
 	private Timer starTimer;
 	private Timer downTimer;
+	private Timer timerJump; //------------------------------------
 	private int myNo;
 	private int findC;
+	private int c;
 
 	public int getScoreResult() {
 		return scoreResult;
@@ -76,7 +79,7 @@ public class showGame extends JFrame {
 		return starScore;
 	}
 
-	public void grapPix(LogIn logIn) throws IOException {
+	public void grapPix(LogIn logIn) throws IOException, DataIOException{
 		this.login = logIn;
 		
 		BufferedImage img = ImageIO.read(showGame.class.getClassLoader().getResource("01.png"));
@@ -124,7 +127,7 @@ public class showGame extends JFrame {
 
 		starTimer = new Timer(80, new ActionListener() { // 초코비 이동
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws DataIOException {
 				Iterator<Huddle> iter = starList.iterator();
 				while (iter.hasNext()) {
 					Huddle j = iter.next();
@@ -145,7 +148,7 @@ public class showGame extends JFrame {
 		starTimer.start(); // 타이머시작
 	}
 
-	private void stopTimers() {
+	private void stopTimers() throws DataIOException{
 		huddleTimer.stop();
 		starTimer.stop();
 		backTimer.stop();
@@ -155,7 +158,7 @@ public class showGame extends JFrame {
 		ur.saveScore(myNo, ur.findLastRound(myNo), scoreResult, starScore, login.getMyCharacter());
 	}
 
-	public showGame(LogIn logIn) {
+	public showGame(LogIn logIn) throws DataIOException{
 		this.login = logIn;
 		myNo = ur.getMyNo(login.getMyId());
 		login.setMyCharacter(ur.getMyCharacter(login.getMyId()));
@@ -236,11 +239,11 @@ public class showGame extends JFrame {
 				}
 			}
 		});
+		c = 0;
 
 		downTimer = new Timer(1200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (whereY == 220) {
-					whereX = 50;
 					whereY = 280;
 					characterUp = false;
 					characterImg.setIcon(new ImageIcon(cImage[findC]));
@@ -250,7 +253,6 @@ public class showGame extends JFrame {
 			}
 		});
 		
-
 		try {
 			grapPix(login);
 		} catch (IOException e1) {
