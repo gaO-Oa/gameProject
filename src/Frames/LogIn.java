@@ -13,12 +13,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import exceptions.DataIOException;
 import info.UserinfoRepositoryImpl;
 
-public class LogIn extends JFrame  {
+public class LogIn extends JFrame {
 
 	ClassLoader classLoader = getClass().getClassLoader();
 	Toolkit kit = Toolkit.getDefaultToolkit();
@@ -32,23 +32,25 @@ public class LogIn extends JFrame  {
 	private JLabel contentPane;
 	private JLabel[] infoTitle = new JLabel[2];
 	private String[] infoTitles = { "아이디", "비밀번호" };
-	private JTextField[] infoField = new JTextField[2];
+	private JTextField infoField = new JTextField(17);
+	private JPasswordField infoFiePw = new JPasswordField(17);
 	private JButton[] jbts = new JButton[3];
 	private String[] jbtsTitles = { "회원가입", "로그인", "메뉴얼" };
 
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					LogIn frame = new LogIn();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LogIn frame = new LogIn();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	
+
 	public int getMyCharacter() {
 		return myCharacter;
 	}
@@ -66,7 +68,7 @@ public class LogIn extends JFrame  {
 		return myId;
 	}
 
-	public LogIn() throws DataIOException {
+	public LogIn() {
 		ur = new UserinfoRepositoryImpl();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,11 +86,10 @@ public class LogIn extends JFrame  {
 			contentPane.add(infoTitle[i]);
 		}
 
-		for (int i = 0; i < infoField.length; i++) {
-			infoField[i] = new JTextField(17);
-			infoField[i].setBounds(248, 117 + i * 34, 116, 21);
-			contentPane.add(infoField[i]);
-		}
+		infoField.setBounds(248, 117, 116, 21);
+		infoFiePw.setBounds(248, 117 + 34, 116, 21);
+		contentPane.add(infoField);
+		contentPane.add(infoFiePw);
 
 		for (int i = 0; i < jbts.length; i++) {
 			jbts[i] = new JButton(jbtsTitles[i]);
@@ -101,51 +102,51 @@ public class LogIn extends JFrame  {
 
 		jbts[0].addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) throws DataIOException{
+			public void actionPerformed(ActionEvent e) {
 				new SignUp().showGUI();
 			}
 		});
 
 		jbts[1].addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) throws DataIOException {
-				
-					String inputId = infoField[0].getText();
-					String inputPw = infoField[1].getText();
+			public void actionPerformed(ActionEvent e) {
 
-					int result = ur.login(inputId, inputPw);
+				String inputId = infoField.getText();
+				String inputPw = infoFiePw.getText();
 
-					if (result == 1) {
-						new Menu(LogIn.this).showGUI();
-						myId = inputId;
-						myNo = ur.getMyNo(myId);
-						myLastRound = ur.findLastRound(myNo);
-						System.out.println("로그인 성공");
-						System.out.println(myId);
-						System.out.println(myNo + "//" + myLastRound);
-					} else {
-						System.out.println("로그인 실패");
-						JOptionPane.showMessageDialog(null, "아이디 및 비밀번호를 확인하세요", "로그인 실패!", JOptionPane.WARNING_MESSAGE);
-					}
+				int result = ur.login(inputId, inputPw);
 
+				if (result == 1) {
+					new Menu(LogIn.this).showGUI();
+					myId = inputId;
+					myNo = ur.getMyNo(myId);
+					myLastRound = ur.findLastRound(myNo);
+					System.out.println("로그인 성공");
+					System.out.println(myId);
+					System.out.println(myNo + "//" + myLastRound);
+
+
+				} else {
+					System.out.println("로그인 실패");
+					JOptionPane.showMessageDialog(null, "아이디 및 비밀번호를 확인하세요", "로그인 실패!", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		
 		myCharacter = ur.getMyCharacter(myId);
-		
-		
-			
+
 		jbts[2].addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) throws DataIOException {
+			public void actionPerformed(ActionEvent e) {
 				manual mn = new manual();
 				mn.setVisible(true);
 			}
+
 		});
 
 	}
 
-	public void showGUI() throws DataIOException {
+	public void showGUI() {
 		setVisible(true);
 	}
 }
