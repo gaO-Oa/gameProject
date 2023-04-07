@@ -83,7 +83,6 @@ public class Menu extends JFrame {
 		btn_Rank.setBackground(new Color(255, 255, 255));
 		btn_Rank.setBounds(100, 200, 100, 50);
 		btn_Rank.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) throws DataIOException {
 				setVisible(false);
@@ -99,7 +98,6 @@ public class Menu extends JFrame {
 		btn_MyRoom.setBackground(new Color(255, 255, 255));
 		btn_MyRoom.setBounds(290, 200, 100, 50);
 		btn_MyRoom.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) throws DataIOException {
 				setVisible(false);			

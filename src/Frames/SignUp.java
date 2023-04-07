@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -35,21 +36,8 @@ public class SignUp extends JFrame implements KeyListener {
 	private JPasswordField[] pw_info = new JPasswordField[2];
 	private JButton[] countBtn = new JButton[2];
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SignUp frame = new SignUp();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} 
-		});
-	}
 
 	public SignUp() {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 600);
 
 		contentPane = new JLabel();
@@ -137,7 +125,6 @@ public class SignUp extends JFrame implements KeyListener {
 		btn_signup.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				boolean signUpResult = false;
 
 				String inputId = text_info[0].getText();
@@ -149,21 +136,15 @@ public class SignUp extends JFrame implements KeyListener {
 						&& cr.checkNnByRegex(inputNickname) == 1) {
 					signUpResult = true;
 				}
-
 				if (signUpResult) {
 					int result = ur.insert(inputId, inputPassword, inputNickname);
 					int lastNo = ur.lastNo();
 					int standardCharacter = ur.standardCharacter(lastNo);
 					int standardRound = ur.stadardRound(lastNo);
 					new SuccessSignUp(SignUp.this).showGUI();
-					System.out.println(result + "명 회원가입 성공");
-					System.out.println(lastNo + " : 마지막 회원가입 No");
-					System.out.println(standardCharacter + ": 마지막 가입자 캐릭터 부여");
-					System.out.println(standardRound + ": 마지막 가입자 라운드 부여");
 				} else {
-					System.out.println("실패");
+					JOptionPane.showMessageDialog(null, "다시 시도하세요", "회원가입 실패!", JOptionPane.WARNING_MESSAGE);
 				}
-
 			}
 		});
 		contentPane.add(btn_signup);
@@ -177,11 +158,9 @@ public class SignUp extends JFrame implements KeyListener {
 			public void actionPerformed(ActionEvent e) {
 				new LogIn().showGUI();
 				dispose();
-
 			}
 		});
 		contentPane.add(btn_back);
-
 	}
 
 	public void showGUI() {
@@ -194,9 +173,7 @@ public class SignUp extends JFrame implements KeyListener {
 			if (e.getSource() == text_info[i]) {
 				countResult[i + (i * 2)].setText("");
 			}
-
 		}
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -233,6 +210,5 @@ public class SignUp extends JFrame implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
 	}
 }

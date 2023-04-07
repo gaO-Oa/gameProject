@@ -23,11 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import exceptions.DataIOException;
 import info.UserinfoRepositoryImpl;
 
 public class showGame extends JFrame {
-
+	
 	ClassLoader classLoader = getClass().getClassLoader();
 	List<Huddle> huddleList = new ArrayList<>();
 	List<Huddle> starList = new ArrayList<>();
@@ -61,15 +60,16 @@ public class showGame extends JFrame {
 	private Timer backTimer; // 배경 타이머
 
 	private boolean characterUp = false;
+	private int jump = 0;
 	private int x = 0;
 	static final int BLACK = -16777216;
 	private Timer huddleTimer;
 	private Timer starTimer;
 	private Timer downTimer;
-	private Timer timerJump; //------------------------------------
 	private int myNo;
 	private int findC;
-	private int c;
+	private int downspeed = -5;
+	private Timer totheGround;
 
 	public int getScoreResult() {
 		return scoreResult;
@@ -79,7 +79,7 @@ public class showGame extends JFrame {
 		return starScore;
 	}
 
-	public void grapPix(LogIn logIn) throws IOException, DataIOException{
+	public void grapPix(LogIn logIn) throws IOException {
 		this.login = logIn;
 		
 		BufferedImage img = ImageIO.read(showGame.class.getClassLoader().getResource("01.png"));
@@ -104,20 +104,18 @@ public class showGame extends JFrame {
 				}
 			}
 		}
-		huddleTimer = new Timer(80, new ActionListener() { // 장애물 이동
+		huddleTimer = new Timer(24, new ActionListener() { // 장애물 이동
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Iterator<Huddle> iter = huddleList.iterator();
 				while (iter.hasNext()) {
 					Huddle j = iter.next();
-					j.setLocation(j.getX() - 10, j.getY()); // x값-10하기
+					j.setLocation(j.getX() - 6, j.getY()); // x값-10하기
 					for (int i = 40; i < 84; i++) {
-						if (j.getX() == i && 280 == whereY) {
-							if (characterUp == false) {
-								j.setVisible(false);
-								iter.remove();
-								stopTimers();
-							}
+						if (j.getX() - 1 == i && characterImg.getY() > 255) {
+							j.setVisible(false);
+							iter.remove();
+							stopTimers();
 						}
 					}
 				}
@@ -125,16 +123,16 @@ public class showGame extends JFrame {
 		});
 		huddleTimer.start(); // 타이머시작
 
-		starTimer = new Timer(80, new ActionListener() { // 초코비 이동
+		starTimer = new Timer(24, new ActionListener() { // 초코비 이동
 			@Override
-			public void actionPerformed(ActionEvent e) throws DataIOException {
+			public void actionPerformed(ActionEvent e) {
 				Iterator<Huddle> iter = starList.iterator();
 				while (iter.hasNext()) {
 					Huddle j = iter.next();
-					j.setLocation(j.getX() - 10, j.getY()); // x값-10하기
-					if (j.getX() >= 50 && j.getX() <= 130) {
-						if (j.getY() >= 180 && j.getY() <= 260) {
-							if (characterUp == true) {
+					j.setLocation(j.getX() - 6, j.getY()); // x값-10하기
+					if (j.getX() >= 50 && j.getX() <= 120) {
+						if (j.getY() >= 180 && (j.getY() <= 260 && j.getY() >= 240)) {
+							if (characterImg.getY() < 250) {
 								j.setVisible(false);
 								iter.remove();
 								starScore += 50;
@@ -148,7 +146,7 @@ public class showGame extends JFrame {
 		starTimer.start(); // 타이머시작
 	}
 
-	private void stopTimers() throws DataIOException{
+	private void stopTimers() {
 		huddleTimer.stop();
 		starTimer.stop();
 		backTimer.stop();
@@ -158,7 +156,7 @@ public class showGame extends JFrame {
 		ur.saveScore(myNo, ur.findLastRound(myNo), scoreResult, starScore, login.getMyCharacter());
 	}
 
-	public showGame(LogIn logIn) throws DataIOException{
+	public showGame(LogIn logIn) {
 		this.login = logIn;
 		myNo = ur.getMyNo(login.getMyId());
 		login.setMyCharacter(ur.getMyCharacter(login.getMyId()));
@@ -187,7 +185,7 @@ public class showGame extends JFrame {
 		bgIng.setIcon(new ImageIcon(imgBg));
 		bgIng.setBounds(0, 0, 100000, 400);
 
-		backTimer = new Timer(25, new ActionListener() {
+		backTimer = new Timer(17, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				x -= 4;
@@ -202,6 +200,26 @@ public class showGame extends JFrame {
 			}
 		});
 		backTimer.start();
+		
+		downspeed = 0;
+		
+		totheGround = new Timer(18, new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (characterImg.getY() <= 280) {
+					int y = characterImg.getY() + downspeed;
+					System.out.println(downspeed);
+					if (y > 280) {
+						y = 280;
+						downspeed = 0;
+						jump = 0;
+					} else {
+						downspeed = downspeed + 1;
+					}
+					characterImg.setBounds(whereX, y, 90, 90);
+				}		
+			}
+		});
 
 		findC = ur.findCharacte(logIn.getMyId()) - 1;
 		System.out.println("내캐릭터" + findC);
@@ -223,41 +241,26 @@ public class showGame extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				downTimer.start();
 				if (e.getKeyCode() == KeyEvent.VK_UP) {
 					characterUp = true;
-					characterImg.setIcon(new ImageIcon(cImage[findC]));
-					whereY = 220;
-					characterImg.setBounds(whereX, whereY, 90, 90);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					downTimer.stop();
-					characterUp = false;
-					characterImg.setIcon(new ImageIcon(cImage[findC]));
-					whereY = 280;
-					characterImg.setBounds(whereX, whereY, 90, 90);
-				}
-			}
-		});
-		c = 0;
-
-		downTimer = new Timer(1200, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (whereY == 220) {
-					whereY = 280;
-					characterUp = false;
-					characterImg.setIcon(new ImageIcon(cImage[findC]));
-					characterImg.setBounds(whereX, whereY, 90, 90);
-					downTimer.stop();
+					if (jump < 2) {
+						jump++;
+						downspeed = -2;
+						characterImg.setIcon(new ImageIcon(cImage[findC]));
+						whereY = characterImg.getY() - 90;
+						characterImg.setBounds(whereX, whereY, 90, 90);
+						totheGround.start();
+					}
 				}
 			}
 		});
 		
 		try {
-			grapPix(login);
+			grapPix(logIn);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
 
 		scoreImg = new JLabel();
 		scoreImg.setIcon(new ImageIcon(imgScore));
@@ -287,6 +290,5 @@ public class showGame extends JFrame {
 		contentPnl.add(scoreImg);
 		contentPnl.add(characterImg);
 		contentPnl.add(bgIng);
-
 	}
 }
