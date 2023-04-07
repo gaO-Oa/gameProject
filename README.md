@@ -30,5 +30,6 @@
 - 사용자 입력값 유효성 검사<br><br>
 
 <br><br>
+![Untitled](https://user-images.githubusercontent.com/119999646/230572295-25ddd146-c832-468e-99ea-96de5f0f8640.png)
 
 <h2><a href="https://candle-bonobo-7d4.notion.site/60a27bea0e004511a954433c7bdca444">💌 더보기</a></h2><br><br>
